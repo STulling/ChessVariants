@@ -23,6 +23,7 @@ namespace ChessVariants.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSignalR();
+            services.AddMemoryCache();
             services.AddControllersWithViews();
             services.AddRazorPages();
             services.AddResponseCompression(opts =>
@@ -56,7 +57,7 @@ namespace ChessVariants.Server
             {
                 endpoints.MapRazorPages();
                 endpoints.MapControllers();
-                endpoints.MapHub<ChatHub>("/chathub");
+                endpoints.MapHub<GameHub>("/gamehub");
                 endpoints.MapFallbackToFile("index.html");
             });
         }

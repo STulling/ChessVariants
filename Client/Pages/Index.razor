@@ -1,11 +1,11 @@
-﻿@page "/"
+﻿@page "/game/{id}"
 @using Microsoft.AspNetCore.SignalR.Client
 @inject NavigationManager NavigationManager
 @implements IAsyncDisposable
 
 <div class="form-group">
     <label>
-        User:
+        @Id:
         <input @bind="userInput" />
     </label>
 </div>
@@ -27,6 +27,8 @@
 </ul>
 
 @code {
+    [Parameter]
+    public string Id { get; set; }
     private HubConnection hubConnection;
     private List<string> messages = new List<string>();
     private string userInput;
@@ -35,27 +37,29 @@
     protected override async Task OnInitializedAsync()
     {
         hubConnection = new HubConnectionBuilder()
-            .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
+            .WithUrl(NavigationManager.ToAbsoluteUri("/gamehub"))
             .Build();
 
-        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        hubConnection.On<string>("ExecuteMove", (message) =>
         {
-            var encodedMsg = $"{user}: {message}";
-            messages.Add(encodedMsg);
+            messages.Add(message);
             StateHasChanged();
         });
 
         await hubConnection.StartAsync();
+
+        await hubConnection.SendAsync("JoinRoom", Id);
     }
 
     Task Send() =>
-        hubConnection.SendAsync("SendMessage", userInput, messageInput);
+        hubConnection.SendAsync("SendMove", Id, messageInput);
 
     public bool IsConnected =>
         hubConnection.State == HubConnectionState.Connected;
 
     public async ValueTask DisposeAsync()
     {
+        await hubConnection.SendAsync("LeaveRoom", Id);
         await hubConnection.DisposeAsync();
     }
 }

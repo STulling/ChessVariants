@@ -27,7 +27,14 @@ namespace ChessVariants.Shared.Base
 
             List<Move> possibleMoves = GenerateMoves(move.start);
 
-            return possibleMoves.Contains(move);
+            if (possibleMoves.Contains(move))
+            {
+                foreach (Rule rule in rules)
+                {
+                    rule.OnMovePlayed(move.start, board, move);
+                }
+                return true;
+            }
         }
 
         private void Cleanup(Position pos, List<Move> moves)

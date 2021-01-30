@@ -106,6 +106,9 @@ namespace ChessVariants.Shared.Base
 		public virtual void OnPostMoveBeingGenerated(Position pos, Board board, Move move)
 		{ }
 
+		public virtual void OnMovePlayed(Position pos, Board board, Move move)
+		{ }
+
 		public virtual void OnCleanup(Position pos, Board board, List<Move> moves)
 		{ }
 	}

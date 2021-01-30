@@ -22,7 +22,7 @@ namespace ChessVariants.Server.Hubs
             }
         }
 
-        public async Task SendMove(string gameId, string message)
+        public async Task SendMove(string gameId, Move move)
         {
             List<Match> matches = _cache.Get<List<Match>>("MatchCacheKey");
             Match match = matches.FirstOrDefault(_ => _.Id == gameId);
@@ -30,9 +30,16 @@ namespace ChessVariants.Server.Hubs
             {
                 if (match.CurrentTurn.ConnectionId == Context.ConnectionId)
                 {
-                    foreach (Player player in match.Players)
+                    if (match.game.VerifyMove(move))
                     {
-                        await Clients.Client(player.ConnectionId).SendAsync("ExecuteMove", message);
+                        foreach (Player player in match.Players)
+                        {
+                            await Clients.Client(player.ConnectionId).SendAsync("ExecuteMove", move);
+                        }
+                    }
+                    else
+                    {
+                        throw new HubException("Invalid Move");
                     }
                 } 
                 else
@@ -61,7 +68,7 @@ namespace ChessVariants.Server.Hubs
                 newMatch.Players.Add(new Player(Context.ConnectionId));
                 matches.Add(newMatch);
             }
-            return base.OnConnectedAsync();
+            return Task.CompletedTask;
         }
 
         public Task LeaveRoom(string gameId)
@@ -72,7 +79,7 @@ namespace ChessVariants.Server.Hubs
             {
                 match.Players.Remove(match.Players.Find(x => x.ConnectionId == Context.ConnectionId));
             }
-            return base.OnConnectedAsync();
+            return Task.CompletedTask;
         }
     }
 }

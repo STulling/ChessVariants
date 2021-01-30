@@ -4,9 +4,9 @@ using System.Text;
 
 namespace ChessVariants.Shared.Base
 {
-	public class Rule
+    public class Rule
 
-	/*  The Rule class encapsulates a (potentially) configurable "rule" that can be 
+    /*  The Rule class encapsulates a (potentially) configurable "rule" that can be 
 		plugged into a Game.  By separating the rules for a game into these plugable 
 		modules, it makes it much easier to define new games.  Most Chess variants 
 		are built with combinations of the same basic rules.  And, if a Game has a 
@@ -14,7 +14,8 @@ namespace ChessVariants.Shared.Base
 		games.  This is why the architecture is designed such that the Game class 
 		doesn't have the ability to override move generation directly.  */
 
-	{
+    {
+
 		// *** PROPERTIES *** //
 		/*
 
@@ -93,5 +94,19 @@ namespace ChessVariants.Shared.Base
 		public virtual void GetNotesForPieceType(PieceType type, List<string> notes)
 		{ }
 		*/
+		public virtual void OnPreRegularMoveGen(Position pos, Board board)
+        { }
+
+		public virtual void OnPostRegularMoveGen(Position pos, List<Move> moves)
+		{ }
+
+		public virtual void OnPreMoveBeingGenerated(Position pos, Board board)
+        { }
+
+		public virtual void OnPostMoveBeingGenerated(Position pos, Board board, Move move)
+		{ }
+
+		public virtual void OnCleanup(Position pos, Board board, List<Move> moves)
+		{ }
 	}
 }

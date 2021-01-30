@@ -20,6 +20,11 @@ namespace ChessVariants.Shared.Base
             this.rules = new List<Rule>();
         }
 
+        public void ExecuteMove(Move move)
+        {
+             
+        }
+
         public bool VerifyMove(Move move)
         {
             Piece piece = board[move.start];
@@ -29,12 +34,14 @@ namespace ChessVariants.Shared.Base
 
             if (possibleMoves.Contains(move))
             {
+                ExecuteMove(move);
                 foreach (Rule rule in rules)
                 {
                     rule.OnMovePlayed(move.start, board, move);
                 }
                 return true;
             }
+            return false;
         }
 
         private void Cleanup(Position pos, List<Move> moves)

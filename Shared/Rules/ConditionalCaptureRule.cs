@@ -25,7 +25,7 @@ namespace ChessVariants.Shared.Rules
             if (history.Count > 0)
             {
                 Move lastMove = history[^1];
-                if (movements_of_targets.Contains(lastMove.movement) && pieces.Contains(lastMove.piece.GetType()))
+                if (movements_of_targets.Contains(lastMove.movement) && targets.Contains(lastMove.piece.GetType()) && pieces.Contains(board[pos].GetType()))
                 {
                     Position offset = lastMove.end - pos;
                     Console.WriteLine(offset);

@@ -167,4 +167,55 @@ namespace ChessVariants.Shared
             return !(left == right);
         }
     }
+
+    public class Slide : Movement, IEquatable<Slide>
+    {
+        private Position stepOffset { get; set; }
+        public Slide(Position offset)
+        {
+            stepOffset = offset;
+        }
+        public Slide(int x, int y)
+        {
+            stepOffset = new Position(x, y);
+        }
+
+        public override List<Position> getPositions(Position position, Board board)
+        {
+            List<Position> allPositions = new List<Position>();
+            Position sample = position + stepOffset;
+            while (board.inBounds(sample) && board[sample] == null)
+            {
+                allPositions.Add(sample);
+                sample += stepOffset;
+            }
+            return allPositions;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Slide);
+        }
+
+        public bool Equals(Slide other)
+        {
+            return other != null &&
+                   EqualityComparer<Position>.Default.Equals(stepOffset, other.stepOffset);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(stepOffset);
+        }
+
+        public static bool operator ==(Slide left, Slide right)
+        {
+            return EqualityComparer<Slide>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(Slide left, Slide right)
+        {
+            return !(left == right);
+        }
+    }
 }

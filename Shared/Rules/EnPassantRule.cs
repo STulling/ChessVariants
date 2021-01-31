@@ -1,4 +1,5 @@
 ﻿using ChessVariants.Shared.Base;
+using ChessVariants.Shared.Pieces;
 using System;
 using System.Collections.Generic;
 using System.Text;

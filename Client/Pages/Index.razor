@@ -83,16 +83,24 @@
     }
 
     public async Task CalcMoves(Position pos) {
-        selectedPos = pos;
-        Console.WriteLine("Selected: " + selectedPos);
+        if (!pos.Equals(selectedPos))
+        {
+            selectedPos = pos;
+            Console.WriteLine("Selected: " + selectedPos);
 
-        moves = game.GenerateMoves(selectedPos);
-        Console.WriteLine(String.Join(", ", moves));
-        possibleTiles.Clear();
-        foreach (Move move in moves) {
-            possibleTiles.Add(move.end);
+            moves = game.GenerateMoves(selectedPos);
+            Console.WriteLine(String.Join(", ", moves));
+            possibleTiles.Clear();
+            foreach (Move move in moves)
+            {
+                possibleTiles.Add(move.end);
+            }
         }
-
+        else 
+        {
+            selectedPos = null;
+            possibleTiles.Clear();
+        }
         StateHasChanged();
     }
 

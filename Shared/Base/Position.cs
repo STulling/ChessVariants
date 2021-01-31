@@ -27,6 +27,16 @@ namespace ChessVariants.Shared.Base
             return new Position(a.x - b.x, a.y - b.y);
         }
 
+        public static bool operator ==(Position left, Position right)
+        {
+            return EqualityComparer<Position>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(Position left, Position right)
+        {
+            return !(left == right);
+        }
+
         public override string ToString()
         {
             return $"({x}, {y})";
@@ -34,15 +44,14 @@ namespace ChessVariants.Shared.Base
 
         public override bool Equals(object obj)
         {
-            return obj is Position position &&
-                   x == position.x &&
-                   y == position.y;
+            return Equals(obj as Position);
         }
 
-        public bool Equals(Position position)
+        public bool Equals(Position other)
         {
-            return x == position.x &&
-                   y == position.y;
+            return other != null &&
+                   x == other.x &&
+                   y == other.y;
         }
 
         public override int GetHashCode()

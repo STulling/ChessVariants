@@ -15,19 +15,10 @@ namespace ChessVariants.Shared.Base.Tests
         public void GenerateMovesTest()
         {
             Game game = new Chess();
-            Position origPos = new Position(1, 6);
-            Position newPos = new Position(1, 4);
-            Console.WriteLine(game.board.ToString());
+            Position origPos = new Position(4, 1);
+            Position newPos = new Position(4, 3);
             game.PlayMove(new Move(game.board[origPos], new Jump(new Position(0, 2)), origPos, newPos));
-            Console.WriteLine(game.board.ToString());
-            List<Move> moves = game.GenerateMoves(newPos);
-            Assert.AreEqual(new Position(1, 4), newPos);
-            Console.WriteLine(game.board.ToString());
-            Console.WriteLine(string.Join(", ", moves));
-            foreach (Move move in moves)
-            {
-                Assert.AreEqual(newPos, move.start);
-            }
+            game.PlayMove(new Move(game.board[4, 0], new Jump(new Position(0, 1)), new Position(4, 0), new Position(4, 1)));
         }
     }
 }

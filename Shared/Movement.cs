@@ -189,6 +189,10 @@ namespace ChessVariants.Shared
                 allPositions.Add(sample);
                 sample += stepOffset;
             }
+            if (board.inBounds(sample))
+            {
+                allPositions.Add(sample);
+            }
             return allPositions;
         }
 

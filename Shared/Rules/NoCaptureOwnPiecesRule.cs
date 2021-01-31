@@ -7,17 +7,17 @@ namespace ChessVariants.Shared.Rules
 {
     public class NoCaptureOwnPiecesRule : Rule
     {
-        public override void OnCleanup(Position pos, Board board, List<Move> moves, List<Move> history)
+        public override void OnCleanup(Position pos, List<Move> moves, Game game)
         {
             foreach (Move move in moves)
             {
-                Piece piece = board[move.end];
-                if (piece != null && piece.owner == board[pos].owner)
+                Piece piece = game.board[move.end];
+                if (piece != null && piece.owner == game.board[pos].owner)
                 {
                     move.legal = false;
                 }
             }
-            base.OnCleanup(pos, board, moves, history);
+            base.OnCleanup(pos, moves, game);
         }
     }
 }

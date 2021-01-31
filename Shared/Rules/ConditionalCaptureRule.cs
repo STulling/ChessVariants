@@ -20,25 +20,24 @@ namespace ChessVariants.Shared.Rules
             this.capturing_moves = capturing_moves;
         }
 
-        public override void OnGenerateSpecialMovesInvolvingHistory(Position pos, Board board, List<Move> moves, List<Move> history)
+        public override void OnGenerateSpecialMoves(Position pos, List<Move> moves, Game game)
         {
-            if (history.Count > 0)
+            if (game.history.Count > 0)
             {
-                Move lastMove = history[^1];
-                if (movements_of_targets.Contains(lastMove.movement) && targets.Contains(lastMove.piece.GetType()) && pieces.Contains(board[pos].GetType()))
+                Move lastMove = game.history[^1];
+                if (movements_of_targets.Contains(lastMove.movement) && targets.Contains(lastMove.piece.GetType()) && pieces.Contains(game.board[pos].GetType()))
                 {
                     Position offset = lastMove.end - pos;
-                    Console.WriteLine(offset);
                     if (capturing_moves.TryGetValue(offset, out Movement newMovement))
                     {
-                        foreach (Position end in newMovement.getPositions(pos, board))
+                        foreach (Position end in newMovement.getPositions(pos, game.board))
                         {
-                            moves.Add(new IndirectCapturingMove(board[pos], pos, end, lastMove.end));
+                            moves.Add(new IndirectCapturingMove(game.board[pos], pos, end, lastMove.end));
                         }
                     }
                 }
             }
-            base.OnGenerateSpecialMovesInvolvingHistory(pos, board, moves, history);
+            base.OnGenerateSpecialMoves(pos, moves, game);
         }
     }
 }

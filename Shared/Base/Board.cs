@@ -54,7 +54,6 @@ namespace ChessVariants.Shared.Base
         {
             return inBounds(new Position(x, y));
         }
-
         public override string ToString()
         {
             string result = "";

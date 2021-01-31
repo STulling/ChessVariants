@@ -7,27 +7,27 @@ namespace ChessVariants.Shared.Rules
 {
     public class MirroredMovementRule : Rule
     {
-        public override void OnCleanup(Position pos, Board board, List<Move> moves, List<Move> history)
+        public override void OnUnmodifyBoard(Position pos, List<Move> moves, Game game)
         {
-            if (board[pos] != null && board[pos].owner == 1)
+            if (game.board[pos] != null && game.board[pos].owner == 1)
             {
-                mirrorBoard(board);
-                mirrorPos(board, pos);
-                mirrorMoves(board, moves);
-                mirrorHistory(board, history);
+                mirrorBoard(game.board);
+                mirrorPos(game.board, pos);
+                mirrorMoves(game.board, moves);
+                mirrorHistory(game.board, game.history);
             }
-            base.OnCleanup(pos, board, moves, history);
+            base.OnUnmodifyBoard(pos, moves, game);
         }
 
-        public override void OnPreRegularMoveGen(Position pos, Board board, List<Move> history)
+        public override void OnModifyBoard(Position pos, Game game)
         {
-            if (board[pos] != null && board[pos].owner == 1)
+            if (game.board[pos] != null && game.board[pos].owner == 1)
             {
-                mirrorBoard(board);
-                mirrorPos(board, pos);
-                mirrorHistory(board, history);
+                mirrorBoard(game.board);
+                mirrorPos(game.board, pos);
+                mirrorHistory(game.board, game.history);
             }
-            base.OnPreRegularMoveGen(pos, board, history);
+            base.OnModifyBoard(pos, game);
         }
 
         public void mirrorBoard(Board board)

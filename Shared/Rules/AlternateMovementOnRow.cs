@@ -26,26 +26,26 @@ namespace ChessVariants.Shared.Rules
         public AlternateMovementOnRow(Type type, Movement movement, List<int> rank) : this(new List<Type> { type }, new List<Movement> { movement }, rank) 
         { }
 
-        public override void OnGenerateSpecialMoves(Position pos, Board board, List<Move> moves)
+        public override void OnGenerateSpecialMoves(Position pos, List<Move> moves, Game game)
         {
-            if (board[pos] == null) return;
+            if (game.board[pos] == null) return;
 
-            Piece piece = board[pos];
+            Piece piece = game.board[pos];
             if (types.Contains(piece.GetType()))
             {
                 if (ranks.Contains(pos.y))
                 {
                     foreach (Movement movement in movements)
                     {
-                        foreach (Position end in movement.getPositions(pos, board))
+                        foreach (Position end in movement.getPositions(pos, game.board))
                         {
-                            moves.Add(new Move(board[pos], movement, pos, end));
+                            moves.Add(new Move(game.board[pos], movement, pos, end));
                         }
                     }
                 }
             }
 
-            base.OnGenerateSpecialMoves(pos, board, moves);
+            base.OnGenerateSpecialMoves(pos, moves, game);
         }
     }
 }

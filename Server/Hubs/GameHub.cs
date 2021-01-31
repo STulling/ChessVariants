@@ -30,7 +30,7 @@ namespace ChessVariants.Server.Hubs
             {
                 if (match.CurrentTurn.ConnectionId == Context.ConnectionId)
                 {
-                    if (match.game.VerifyMove(move))
+                    if (match.game.PlayMove(move))
                     {
                         foreach (Player player in match.Players)
                         {

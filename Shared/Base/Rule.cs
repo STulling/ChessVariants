@@ -111,5 +111,8 @@ namespace ChessVariants.Shared.Base
 
 		public virtual void OnCleanup(Position pos, Board board, List<Move> moves)
 		{ }
+
+		public virtual void OnGenerateSpecialMoves(Position pos, Board board, List<Move> moves)
+		{ }
 	}
 }

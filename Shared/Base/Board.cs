@@ -8,6 +8,8 @@ namespace ChessVariants.Shared.Base
     public class Board
     {
         public Piece[,] pieces;
+        public int width;
+        public int height;
 
         public Piece this[Position pos]
         {
@@ -35,9 +37,6 @@ namespace ChessVariants.Shared.Base
             }
         }
 
-        public int width;
-        public int height;
-
         public Board(int width, int height)
         {
             this.width = width;
@@ -47,8 +46,8 @@ namespace ChessVariants.Shared.Base
 
         public bool inBounds(Position pos)
         {
-            return pos.x > 0 && pos.x < width
-                && pos.y > 0 && pos.y < height;
+            return pos.x >= 0 && pos.x < width
+                && pos.y >= 0 && pos.y < height;
         }
 
         public bool inBounds(int x, int y)
@@ -56,33 +55,26 @@ namespace ChessVariants.Shared.Base
             return inBounds(new Position(x, y));
         }
 
-        public void mirrorBoard()
+        public override string ToString()
         {
-            Piece[,] newPieces = new Piece[width, height];
-
-            for (int x = 0; x < width; x++)
+            string result = "";
+            for (int row = height - 1; row >= 0; row--)
             {
-                for (int y = 0; y < height; y++)
+                for(int column = 0; column < width; column++)
                 {
-                    newPieces[x, height - 1 - y] = pieces[x, y];
+                    if (pieces[column, row] == null)
+                    {
+                        result += "0";
+
+                    }
+                    else
+                    {
+                        result += pieces[column, row].GetType().Name[0];
+                    }
                 }
+                result += "\n";
             }
-
-            this.pieces = newPieces;
-        }
-
-        public void mirrorMoves(List<Move> moves)
-        {
-            foreach (Move move in moves) 
-            {
-                mirrorPos(move.start);
-                mirrorPos(move.end);
-            };
-        }
-
-        public void mirrorPos(Position pos)
-        {
-            pos.y = this.height - 1 - pos.y;
+            return result;
         }
     }
 }

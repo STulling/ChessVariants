@@ -17,7 +17,7 @@ namespace ChessVariants.Shared
         {
             movements = new List<Movement>
             {
-                new Jump(0, 1),
+                new JumpNoCapture(0, 1),
                 new JumpIfCapture(1, 1),
                 new JumpIfCapture(-1, 1)
             };

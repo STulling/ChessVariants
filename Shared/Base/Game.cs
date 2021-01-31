@@ -20,15 +20,16 @@ namespace ChessVariants.Shared.Base
             this.rules = new List<Rule>();
         }
 
-        public void ExecuteMove(Move move)
+        private void ExecuteMove(Move move)
         {
-             
+            board[move.start] = null;
+            board[move.end] = move.piece;
         }
 
-        public bool VerifyMove(Move move)
+        public bool PlayMove(Move move)
         {
             Piece piece = board[move.start];
-            if (piece == null) return true;
+            if (piece == null) return false;
 
             List<Move> possibleMoves = GenerateMoves(move.start);
 
@@ -59,9 +60,11 @@ namespace ChessVariants.Shared.Base
             }
         }
 
-        private List<Move> GenerateMoves(Position pos)
+        public List<Move> GenerateMoves(Position pos)
         {
             List<Move> moves = new List<Move>();
+            if (board[pos] == null) return moves;
+
             foreach (Rule rule in rules)
             {
                 rule.OnPreRegularMoveGen(pos, board);
@@ -70,6 +73,10 @@ namespace ChessVariants.Shared.Base
             foreach (Rule rule in rules)
             {
                 rule.OnPostRegularMoveGen(pos, moves);
+            }
+            foreach (Rule rule in rules)
+            {
+                rule.OnGenerateSpecialMoves(pos, board, moves);
             }
             Cleanup(pos, moves);
             return moves;
@@ -88,7 +95,7 @@ namespace ChessVariants.Shared.Base
                 positions.AddRange(movement.getPositions(pos, board));
                 foreach (Position end in movement.getPositions(pos, board))
                 {
-                    Move move = new Move(pos, end);
+                    Move move = new Move(board[pos], pos, end);
                     foreach (Rule rule in rules)
                     {
                         rule.OnPostMoveBeingGenerated(pos, board, move);

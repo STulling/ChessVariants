@@ -1,5 +1,6 @@
 ﻿@page "/game/{id}"
 @using ChessVariants.Shared.Base
+@using ChessVariants.Shared.Games
 @using Microsoft.AspNetCore.SignalR.Client
 @inject NavigationManager NavigationManager
 @implements IAsyncDisposable
@@ -11,13 +12,37 @@
     </label>
 </div>
 <div class="form-group">
-    <label>
-        Message:
-        <input @bind="selX" size="50" />
-        <input @bind="selY" size="50" />
-    </label>
+    <table>
+    @for (int row = game.board.height - 1; row >= 0; row--)
+    {
+        int y = row;
+        <tr>
+        @for (int column = 0; column < game.board.width; column++)
+        {
+            int x = column;
+            @if (possibleTiles.Contains(new Position(column, row))) {
+                <td style="width:100px;height:100px;background-color:green"><button @onclick="@(() => ExecuteMove(new Position(x, y)))">(@column, @row)</button></td>
+            }
+            else if (((row+column) % 2) == 0) {
+                <td style="width:100px;height:100px;background-color:white">
+                @if (game.board[column, row] != null) {
+                    <button @onclick="@(() => CalcMoves(new Position(x, y)))">(@column, @row)</button>
+                }
+                </td>
+            }
+            else {
+                <td style="width:100px;height:100px;background-color:gray">
+                @if (game.board[column, row] != null) {
+                    <button @onclick="@(() => CalcMoves(new Position(x, y)))">(@column, @row)</button>
+                }
+                </td>
+            }
+        }
+        </tr>
+    }
+    </table>
 </div>
-<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+<!--<button @onclick="Send" disabled="@(!IsConnected)">Send</button>-->
 
 <hr>
 
@@ -33,10 +58,11 @@
     public string Id { get; set; }
     private HubConnection hubConnection;
     private List<Move> messages = new List<Move>();
-    private int selX = 4;
-    private int selY = 4;
+    private List<Position> possibleTiles = new List<Position>();
+    private Position selectedPos;
     private string userInput;
     private string messageInput;
+    private Game game = new Chess();
 
     protected override async Task OnInitializedAsync()
     {
@@ -55,10 +81,37 @@
         await hubConnection.SendAsync("JoinRoom", Id);
     }
 
+    public async Task CalcMoves(Position pos) {
+        selectedPos = pos;
+        Console.WriteLine("Selected: " + selectedPos);
+
+        List<Move> moves = game.GenerateMoves(selectedPos);
+        Console.WriteLine(String.Join(", ", moves));
+        possibleTiles.Clear();
+        foreach (Move move in moves) {
+            possibleTiles.Add(move.end);
+        }
+
+        StateHasChanged();
+    }
+
+    public async Task ExecuteMove(Position pos) {
+        Move move = new Move(game.board[selectedPos], selectedPos, pos);
+        Console.WriteLine("Executing from: " + selectedPos);
+        Console.WriteLine("Executing: " + move);
+        if (game.PlayMove(move)) {
+            Console.WriteLine("Move valid");
+            selectedPos = null;
+            possibleTiles.Clear();
+        }
+        StateHasChanged();
+    }
+
     Task Send() =>
         hubConnection.SendAsync("SendMove", Id, 
             new Move(
-                new Position(selX, selY), 
+                game.board[selectedPos],
+                selectedPos, 
                 new Position(4, 5)
             )
         );

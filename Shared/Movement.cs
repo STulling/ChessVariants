@@ -37,6 +37,33 @@ namespace ChessVariants.Shared
         }
     }
 
+    public class JumpNoCapture : Movement
+    {
+        private Position stepOffset;
+        public JumpNoCapture(Position offset)
+        {
+            stepOffset = offset;
+        }
+
+        public JumpNoCapture(int x, int y)
+        {
+            stepOffset = new Position(x, y);
+        }
+
+        public override List<Position> getPositions(Position position, Board board)
+        {
+            Position result = position + stepOffset;
+            if (board.inBounds(result) && board[result] == null)
+            {
+                return new List<Position>() { result };
+            }
+            else
+            {
+                return new List<Position>();
+            }
+        }
+    }
+
     public class JumpIfCapture : Movement
     {
         private Position stepOffset;

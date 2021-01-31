@@ -42,6 +42,7 @@ namespace ChessVariants.Shared.Base
         {
             return other != null &&
                    EqualityComparer<Piece>.Default.Equals(piece, other.piece) &&
+                   EqualityComparer<Movement>.Default.Equals(movement, other.movement) &&
                    EqualityComparer<Position>.Default.Equals(start, other.start) &&
                    EqualityComparer<Position>.Default.Equals(end, other.end) &&
                    legal == other.legal;
@@ -49,11 +50,21 @@ namespace ChessVariants.Shared.Base
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(piece, start, end, legal);
+            return HashCode.Combine(piece, movement, start, end, legal);
+        }
+
+        public static bool operator ==(Move left, Move right)
+        {
+            return EqualityComparer<Move>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(Move left, Move right)
+        {
+            return !(left == right);
         }
     }
 
-    public class SpecialMove : Move
+    public class SpecialMove : Move, IEquatable<SpecialMove>
     {
         public Position capture;
         public SpecialMove() { }
@@ -66,17 +77,6 @@ namespace ChessVariants.Shared.Base
             this.capture = capture;
         }
 
-        public override void Execute(Board board)
-        {
-            board[capture] = null;
-            base.Execute(board);
-        }
-
-        public override string ToString()
-        {
-            return $"{piece.GetType().Name}: {start} -> {end} , capturing:{capture}";
-        }
-
         public override bool Equals(object obj)
         {
             return Equals(obj as SpecialMove);
@@ -85,16 +85,39 @@ namespace ChessVariants.Shared.Base
         public bool Equals(SpecialMove other)
         {
             return other != null &&
+                   base.Equals(other) &&
                    EqualityComparer<Piece>.Default.Equals(piece, other.piece) &&
+                   EqualityComparer<Movement>.Default.Equals(movement, other.movement) &&
                    EqualityComparer<Position>.Default.Equals(start, other.start) &&
                    EqualityComparer<Position>.Default.Equals(end, other.end) &&
-                   EqualityComparer<Position>.Default.Equals(capture, other.capture) &&
-                   legal == other.legal;
+                   legal == other.legal &&
+                   EqualityComparer<Position>.Default.Equals(capture, other.capture);
+        }
+
+        public override void Execute(Board board)
+        {
+            board[capture] = null;
+            base.Execute(board);
         }
 
         public override int GetHashCode()
         {
-            return HashCode.Combine(piece, start, end, legal, capture);
+            return HashCode.Combine(base.GetHashCode(), piece, movement, start, end, legal, capture);
+        }
+
+        public override string ToString()
+        {
+            return $"{piece.GetType().Name}: {start} -> {end} , capturing:{capture}";
+        }
+
+        public static bool operator ==(SpecialMove left, SpecialMove right)
+        {
+            return EqualityComparer<SpecialMove>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(SpecialMove left, SpecialMove right)
+        {
+            return !(left == right);
         }
     }
 }

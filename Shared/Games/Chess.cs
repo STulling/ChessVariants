@@ -23,6 +23,7 @@ namespace ChessVariants.Shared.Games
             rules.Add(new MirroredMovementRule());
             rules.Add(new AlternateMovementOnRow(typeof(Pawn), new JumpNoCapture(0, 2), new List<int> { 1 }));
             rules.Add(new NoCaptureOwnPiecesRule());
+            rules.Add(new EnPassantRule());
         }
     }
 }

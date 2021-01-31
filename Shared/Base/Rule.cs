@@ -94,7 +94,7 @@ namespace ChessVariants.Shared.Base
 		public virtual void GetNotesForPieceType(PieceType type, List<string> notes)
 		{ }
 		*/
-		public virtual void OnPreRegularMoveGen(Position pos, Board board)
+		public virtual void OnPreRegularMoveGen(Position pos, Board board, List<Move> history)
         { }
 
 		public virtual void OnPostRegularMoveGen(Position pos, List<Move> moves)
@@ -109,7 +109,7 @@ namespace ChessVariants.Shared.Base
 		public virtual void OnMovePlayed(Position pos, Board board, Move move)
 		{ }
 
-		public virtual void OnCleanup(Position pos, Board board, List<Move> moves)
+		public virtual void OnCleanup(Position pos, Board board, List<Move> moves, List<Move> history)
 		{ }
 
 		public virtual void OnGenerateSpecialMoves(Position pos, Board board, List<Move> moves)

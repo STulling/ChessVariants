@@ -52,7 +52,7 @@ namespace ChessVariants.Shared.Base
         {
             foreach (Rule rule in rules)
             {
-                rule.OnCleanup(pos, board, moves);
+                rule.OnCleanup(pos, board, moves, history);
             }
             moves.RemoveAll(move => !move.legal);
         }
@@ -64,7 +64,7 @@ namespace ChessVariants.Shared.Base
 
             foreach (Rule rule in rules)
             {
-                rule.OnPreRegularMoveGen(pos, board);
+                rule.OnPreRegularMoveGen(pos, board, history);
             }
             moves.AddRange(GenerateRegularMoves(pos));
             foreach (Rule rule in rules)

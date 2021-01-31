@@ -10,9 +10,9 @@ namespace ChessVariants.Shared
         public abstract List<Position> getPositions(Position position, Board board);
     }
 
-    public class Jump : Movement
+    public class Jump : Movement, IEquatable<Jump>
     {
-        private Position stepOffset;
+        private Position stepOffset { get; set; }
         public Jump(Position offset)
         {
             stepOffset = offset;
@@ -35,11 +35,37 @@ namespace ChessVariants.Shared
                 return new List<Position>();
             }
         }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as Jump);
+        }
+
+        public bool Equals(Jump other)
+        {
+            return other != null &&
+                   EqualityComparer<Position>.Default.Equals(stepOffset, other.stepOffset);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(stepOffset);
+        }
+
+        public static bool operator ==(Jump left, Jump right)
+        {
+            return EqualityComparer<Jump>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(Jump left, Jump right)
+        {
+            return !(left == right);
+        }
     }
 
-    public class JumpNoCapture : Movement
+    public class JumpNoCapture : Movement, IEquatable<JumpNoCapture>
     {
-        private Position stepOffset;
+        private Position stepOffset { get; set; }
         public JumpNoCapture(Position offset)
         {
             stepOffset = offset;
@@ -62,11 +88,37 @@ namespace ChessVariants.Shared
                 return new List<Position>();
             }
         }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as JumpNoCapture);
+        }
+
+        public bool Equals(JumpNoCapture other)
+        {
+            return other != null &&
+                   EqualityComparer<Position>.Default.Equals(stepOffset, other.stepOffset);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(stepOffset);
+        }
+
+        public static bool operator ==(JumpNoCapture left, JumpNoCapture right)
+        {
+            return EqualityComparer<JumpNoCapture>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(JumpNoCapture left, JumpNoCapture right)
+        {
+            return !(left == right);
+        }
     }
 
-    public class JumpIfCapture : Movement
+    public class JumpIfCapture : Movement, IEquatable<JumpIfCapture>
     {
-        private Position stepOffset;
+        private Position stepOffset { get; set; }
         public JumpIfCapture(Position offset)
         {
             stepOffset = offset;
@@ -87,6 +139,32 @@ namespace ChessVariants.Shared
             {
                 return new List<Position>();
             }
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as JumpIfCapture);
+        }
+
+        public bool Equals(JumpIfCapture other)
+        {
+            return other != null &&
+                   EqualityComparer<Position>.Default.Equals(stepOffset, other.stepOffset);
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(stepOffset);
+        }
+
+        public static bool operator ==(JumpIfCapture left, JumpIfCapture right)
+        {
+            return EqualityComparer<JumpIfCapture>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(JumpIfCapture left, JumpIfCapture right)
+        {
+            return !(left == right);
         }
     }
 }

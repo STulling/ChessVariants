@@ -62,6 +62,7 @@
     private Position selectedPos;
     private string userInput;
     private string messageInput;
+    private List<Move> moves;
     private Game game = new Chess();
 
     protected override async Task OnInitializedAsync()
@@ -85,7 +86,7 @@
         selectedPos = pos;
         Console.WriteLine("Selected: " + selectedPos);
 
-        List<Move> moves = game.GenerateMoves(selectedPos);
+        moves = game.GenerateMoves(selectedPos);
         Console.WriteLine(String.Join(", ", moves));
         possibleTiles.Clear();
         foreach (Move move in moves) {
@@ -96,7 +97,9 @@
     }
 
     public async Task ExecuteMove(Position pos) {
-        Move move = new Move(game.board[selectedPos], null, selectedPos, pos);
+        Console.WriteLine(String.Join(", ", moves));
+        Console.WriteLine(pos);
+        Move move = moves.Find(x => x.end.Equals(pos));
         Console.WriteLine("Executing from: " + selectedPos);
         Console.WriteLine("Executing: " + move);
         if (game.PlayMove(move)) {

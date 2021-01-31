@@ -33,7 +33,7 @@ namespace ChessVariants.Shared.Rules
                     {
                         foreach (Position end in newMovement.getPositions(pos, board))
                         {
-                            moves.Add(new SpecialMove(board[pos], pos, end, lastMove.end));
+                            moves.Add(new IndirectCapturingMove(board[pos], pos, end, lastMove.end));
                         }
                     }
                 }

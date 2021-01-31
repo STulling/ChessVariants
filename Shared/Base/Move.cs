@@ -64,12 +64,12 @@ namespace ChessVariants.Shared.Base
         }
     }
 
-    public class SpecialMove : Move, IEquatable<SpecialMove>
+    public class IndirectCapturingMove : Move, IEquatable<IndirectCapturingMove>
     {
         public Position capture;
-        public SpecialMove() { }
+        public IndirectCapturingMove() { }
 
-        public SpecialMove(Piece piece, Position start, Position end, Position capture)
+        public IndirectCapturingMove(Piece piece, Position start, Position end, Position capture)
         {
             this.piece = piece;
             this.start = start;
@@ -79,10 +79,10 @@ namespace ChessVariants.Shared.Base
 
         public override bool Equals(object obj)
         {
-            return Equals(obj as SpecialMove);
+            return Equals(obj as IndirectCapturingMove);
         }
 
-        public bool Equals(SpecialMove other)
+        public bool Equals(IndirectCapturingMove other)
         {
             return other != null &&
                    base.Equals(other) &&
@@ -110,12 +110,12 @@ namespace ChessVariants.Shared.Base
             return $"{piece.GetType().Name}: {start} -> {end} , capturing:{capture}";
         }
 
-        public static bool operator ==(SpecialMove left, SpecialMove right)
+        public static bool operator ==(IndirectCapturingMove left, IndirectCapturingMove right)
         {
-            return EqualityComparer<SpecialMove>.Default.Equals(left, right);
+            return EqualityComparer<IndirectCapturingMove>.Default.Equals(left, right);
         }
 
-        public static bool operator !=(SpecialMove left, SpecialMove right)
+        public static bool operator !=(IndirectCapturingMove left, IndirectCapturingMove right)
         {
             return !(left == right);
         }

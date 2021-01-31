@@ -114,5 +114,8 @@ namespace ChessVariants.Shared.Base
 
 		public virtual void OnGenerateSpecialMoves(Position pos, Board board, List<Move> moves)
 		{ }
+
+		public virtual void OnGenerateSpecialMovesInvolvingHistory(Position pos, Board board, List<Move> moves, List<Move> history)
+		{ }
 	}
 }

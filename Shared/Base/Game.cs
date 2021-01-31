@@ -13,17 +13,19 @@ namespace ChessVariants.Shared.Base
 
         public List<Rule> rules;
 
+        public List<Move> history;
+
         public Board board;
 
         public Game()
         {
             this.rules = new List<Rule>();
+            this.history = new List<Move>();
         }
 
         private void ExecuteMove(Move move)
         {
-            board[move.start] = null;
-            board[move.end] = move.piece;
+            move.Execute(board);
         }
 
         public bool PlayMove(Move move)
@@ -36,6 +38,7 @@ namespace ChessVariants.Shared.Base
             if (possibleMoves.Contains(move))
             {
                 ExecuteMove(move);
+                history.Add(move);
                 foreach (Rule rule in rules)
                 {
                     rule.OnMovePlayed(move.start, board, move);
@@ -51,13 +54,7 @@ namespace ChessVariants.Shared.Base
             {
                 rule.OnCleanup(pos, board, moves);
             }
-            foreach (Move move in moves)
-            {
-                if (!move.legal)
-                {
-                    moves.Remove(move);
-                }
-            }
+            moves.RemoveAll(move => !move.legal);
         }
 
         public List<Move> GenerateMoves(Position pos)
@@ -78,6 +75,10 @@ namespace ChessVariants.Shared.Base
             {
                 rule.OnGenerateSpecialMoves(pos, board, moves);
             }
+            foreach (Rule rule in rules)
+            {
+                rule.OnGenerateSpecialMovesInvolvingHistory(pos, board, moves, history);
+            }
             Cleanup(pos, moves);
             return moves;
         }
@@ -95,7 +96,7 @@ namespace ChessVariants.Shared.Base
                 positions.AddRange(movement.getPositions(pos, board));
                 foreach (Position end in movement.getPositions(pos, board))
                 {
-                    Move move = new Move(board[pos], pos, end);
+                    Move move = new Move(board[pos], movement, pos, end);
                     foreach (Rule rule in rules)
                     {
                         rule.OnPostMoveBeingGenerated(pos, board, move);

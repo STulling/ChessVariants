@@ -39,7 +39,7 @@ namespace ChessVariants.Shared.Rules
                     {
                         foreach (Position end in movement.getPositions(pos, board))
                         {
-                            moves.Add(new Move(board[pos], pos, end));
+                            moves.Add(new Move(board[pos], movement, pos, end));
                         }
                     }
                 }

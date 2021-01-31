@@ -96,7 +96,7 @@
     }
 
     public async Task ExecuteMove(Position pos) {
-        Move move = new Move(game.board[selectedPos], selectedPos, pos);
+        Move move = new Move(game.board[selectedPos], null, selectedPos, pos);
         Console.WriteLine("Executing from: " + selectedPos);
         Console.WriteLine("Executing: " + move);
         if (game.PlayMove(move)) {
@@ -111,6 +111,7 @@
         hubConnection.SendAsync("SendMove", Id, 
             new Move(
                 game.board[selectedPos],
+                null,
                 selectedPos, 
                 new Position(4, 5)
             )

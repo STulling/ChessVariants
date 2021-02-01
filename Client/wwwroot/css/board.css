@@ -1,0 +1,27 @@
+﻿td.tile {
+    width: 100px;
+    height: 100px;
+    position: relative;
+}
+
+td.white {
+    background-color: white;
+}
+
+td.gray {
+    background-color: gray;
+}
+
+td.tile img {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+img.target {
+    filter: opacity(0.5);
+}
+
+img.piece {
+    height: -webkit-fill-available;
+}

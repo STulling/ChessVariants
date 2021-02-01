@@ -22,10 +22,10 @@ namespace ChessVariants.Shared.Games
             board[1, 7] = new Knight { owner = 1 };
             board[6, 7] = new Knight { owner = 1 };
 
-            board[0, 0] = new Tower();
-            board[7, 0] = new Tower();
-            board[0, 7] = new Tower { owner = 1 };
-            board[7, 7] = new Tower { owner = 1 };
+            board[0, 0] = new Rook();
+            board[7, 0] = new Rook();
+            board[0, 7] = new Rook { owner = 1 };
+            board[7, 7] = new Rook { owner = 1 };
 
             board[2, 0] = new Bishop();
             board[5, 0] = new Bishop();
@@ -38,10 +38,10 @@ namespace ChessVariants.Shared.Games
             board[3, 7] = new Queen { owner = 1 };
 
             rules.Add(new MirroredMovementRule());
-            rules.Add(new AlternateMovementOnRow(typeof(Pawn), new JumpNoCapture(0, 2), new List<int> { 1 }));
+            rules.Add(new AlternateMovementOnRowRule(typeof(Pawn), new JumpNoCapture(0, 2), new List<int> { 1 }));
             rules.Add(new NoCaptureOwnPiecesRule());
             rules.Add(new EnPassantRule());
-            rules.Add(new CannotMoveIntoAttack(typeof(King)));
+            rules.Add(new CannotMoveIntoAttackRule(typeof(King)));
         }
     }
 }

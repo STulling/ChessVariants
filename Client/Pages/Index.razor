@@ -20,29 +20,22 @@
         @for (int column = 0; column < game.board.width; column++)
         {
             int x = column;
+
+            <td 
+                @onclick="@(() => PressPosition(new Position(x, y)))" 
+                class="tile @((((row+column) % 2) != 0) ? "white" : "gray")">
+            @if (game.board[column, row] != null) {
+                <img class="piece" src="/images/pieces/@(game.board[column, row].GetFileName())">
+            }
             @if (possibleTiles.Contains(new Position(column, row))) {
-                <td style="width:100px;height:100px;background-color:green"><button @onclick="@(() => ExecuteMove(new Position(x, y)))">(@column, @row)</button></td>
+                <img class="target" src="/images/target.svg"/>
             }
-            else if (((row+column) % 2) == 0) {
-                <td style="width:100px;height:100px;background-color:white">
-                @if (game.board[column, row] != null) {
-                    <button @onclick="@(() => CalcMoves(new Position(x, y)))">(@column, @row)</button>
-                }
-                </td>
-            }
-            else {
-                <td style="width:100px;height:100px;background-color:gray">
-                @if (game.board[column, row] != null) {
-                    <button @onclick="@(() => CalcMoves(new Position(x, y)))">(@column, @row)</button>
-                }
-                </td>
-            }
+            </td>
         }
         </tr>
     }
     </table>
 </div>
-<!--<button @onclick="Send" disabled="@(!IsConnected)">Send</button>-->
 
 <hr>
 
@@ -57,7 +50,7 @@
     [Parameter]
     public string Id { get; set; }
     private HubConnection hubConnection;
-    private List<Move> messages = new List<Move>();
+    private List<string> messages = new List<string>();
     private List<Position> possibleTiles = new List<Position>();
     private Position selectedPos;
     private string userInput;
@@ -71,8 +64,9 @@
             .WithUrl(NavigationManager.ToAbsoluteUri("/gamehub"))
             .Build();
 
-        hubConnection.On<Move>("ExecuteMove", (message) =>
+        hubConnection.On<string>("Log", (message) =>
         {
+            Console.WriteLine("Got message: " + message);
             messages.Add(message);
             StateHasChanged();
         });
@@ -80,6 +74,15 @@
         await hubConnection.StartAsync();
 
         await hubConnection.SendAsync("JoinRoom", Id);
+    }
+
+    public async Task PressPosition(Position pos) {
+        if (moves != null && moves.Any(x => x.end == pos)) {
+            ExecuteMove(pos);
+        }
+        else {
+            CalcMoves(pos);
+        }
     }
 
     public async Task CalcMoves(Position pos) {
@@ -100,6 +103,7 @@
         {
             selectedPos = null;
             possibleTiles.Clear();
+            moves.Clear();
         }
         StateHasChanged();
     }
@@ -114,6 +118,7 @@
             Console.WriteLine("Move valid");
             selectedPos = null;
             possibleTiles.Clear();
+            moves.Clear();
         }
         StateHasChanged();
     }

@@ -35,7 +35,7 @@ namespace ChessVariants.Server.Hubs
                         foreach (Player player in match.Players)
                         {
                             await Clients.Client(player.ConnectionId).SendAsync("ExecuteMove", move);
-                        }
+                        } 
                     }
                     else
                     {
@@ -50,16 +50,20 @@ namespace ChessVariants.Server.Hubs
             throw new HubException("Unauthorized");
         }
 
-        public Task JoinRoom(string gameId)
+        public async Task JoinRoom(string gameId)
         {
             List<Match> matches = _cache.Get<List<Match>>("MatchCacheKey");
             Match match = matches.FirstOrDefault(_ => _.Id == gameId);
             if (match != null)
             {
-                if (match.Players.Find(x => x.ConnectionId == Context.ConnectionId) != null)
+                if (match.Players.Find(x => x.ConnectionId == Context.ConnectionId) == null)
                 {
                     Player player = new Player(Context.ConnectionId);
                     match.Players.Add(player);
+                    foreach (Player p in match.Players)
+                    {
+                        await Clients.Client(p.ConnectionId).SendAsync("Log", $"{Context.ConnectionId} joined");
+                    }
                 }
             } 
             else
@@ -67,19 +71,25 @@ namespace ChessVariants.Server.Hubs
                 Match newMatch = new Match(gameId);
                 newMatch.Players.Add(new Player(Context.ConnectionId));
                 matches.Add(newMatch);
+                foreach (Player p in newMatch.Players)
+                {
+                    await Clients.Client(p.ConnectionId).SendAsync("Log", $"{Context.ConnectionId} joined");
+                }
             }
-            return Task.CompletedTask;
         }
 
-        public Task LeaveRoom(string gameId)
+        public async Task LeaveRoom(string gameId)
         {
             List<Match> matches = _cache.Get<List<Match>>("MatchCacheKey");
             Match match = matches.FirstOrDefault(_ => _.Id == gameId);
             if (match != null)
             {
                 match.Players.Remove(match.Players.Find(x => x.ConnectionId == Context.ConnectionId));
+                foreach (Player player in match.Players)
+                {
+                    await Clients.Client(player.ConnectionId).SendAsync("Log", $"{Context.ConnectionId} left");
+                }
             }
-            return Task.CompletedTask;
         }
     }
 }

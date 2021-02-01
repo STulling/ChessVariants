@@ -6,6 +6,7 @@ namespace ChessVariants.Shared.Pieces
     {
         public Pawn()
         {
+            name = "Pawn";
             movements = new List<Movement>
             {
                 new JumpNoCapture(0, 1),
@@ -19,6 +20,7 @@ namespace ChessVariants.Shared.Pieces
     {
         public King()
         {
+            name = "King";
             movements = new List<Movement>
             {
                 new Jump(0, 1),
@@ -37,6 +39,7 @@ namespace ChessVariants.Shared.Pieces
     {
         public Knight()
         {
+            name = "Knight";
             movements = new List<Movement>
             {
                 new Jump(2, 1),
@@ -55,6 +58,7 @@ namespace ChessVariants.Shared.Pieces
     {
         public Bishop()
         {
+            name = "Bishop";
             movements = new List<Movement>
             {
                 new Slide(1, 1),
@@ -65,10 +69,11 @@ namespace ChessVariants.Shared.Pieces
         }
     }
 
-    public class Tower : Piece
+    public class Rook : Piece
     {
-        public Tower()
+        public Rook()
         {
+            name = "Rook";
             movements = new List<Movement>
             {
                 new Slide(0, 1),
@@ -83,6 +88,7 @@ namespace ChessVariants.Shared.Pieces
     {
         public Queen()
         {
+            name = "Queen";
             movements = new List<Movement>
             {
                 new Slide(0, 1),

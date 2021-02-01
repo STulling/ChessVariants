@@ -5,31 +5,35 @@ using System.Text;
 
 namespace ChessVariants.Shared.Rules
 {
-    public class CannotMoveIntoAttack : Rule
+    public class CannotMoveIntoAttackRule : Rule
     {
         private List<Type> pieces;
 
         private Piece[,] tmp;
-        public CannotMoveIntoAttack(List<Type> pieces)
+        public CannotMoveIntoAttackRule(List<Type> pieces)
         {
             this.pieces = pieces;
             this.useInCheckCalculation = false;
         }
 
-        public CannotMoveIntoAttack(Type piece) : this(new List<Type> { piece })
+        public CannotMoveIntoAttackRule(Type piece) : this(new List<Type> { piece })
         { }
 
         public override void OnCleanup(Position pos, List<Move> moves, Game game)
         {
-            if (pieces.Contains(game.board[pos].GetType()))
+            int owner = game.board[pos].owner;
+            tmp = game.board.pieces.Clone() as Piece[,];
+            foreach (Type pieceType in pieces)
             {
-                tmp = game.board.pieces.Clone() as Piece[,];
                 foreach (Move move in moves)
                 {
                     move.Execute(game.board);
-                    if (game.InCheck(move.end))
+                    foreach (Position targetPos in game.GetPiecePositions(pieceType, owner))
                     {
-                        move.legal = false;
+                        if (game.InCheck(targetPos))
+                        {
+                            move.legal = false;
+                        }
                     }
                     game.board.pieces = tmp.Clone() as Piece[,];
                 }

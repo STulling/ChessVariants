@@ -16,6 +16,7 @@ namespace ChessVariants.Shared.Base
         public List<Move> history;
 
         public Board board;
+        public bool checkCalculation = false;
 
         public Game()
         {
@@ -48,17 +49,38 @@ namespace ChessVariants.Shared.Base
             return false;
         }
 
+        public List<Position> GetPiecePositions(Type pieceType, int owner)
+        {
+            List<Position> result = new List<Position>();
+            for (int x = 0; x < board.width; x++)
+            {
+                for (int y = 0; y < board.height; y++)
+                {
+                    if (board[x, y] == null) continue;
+                    Piece piece = board[x, y];
+                    if (piece.owner == owner && piece.GetType().Equals(pieceType))
+                    {
+                        result.Add(new Position(x, y));
+                    }
+                }
+            }
+            return result;
+        }
+
         public bool InCheck(Position pos)
         {
+            checkCalculation = true;
             List<Position> otherPositions = GetAllOtherPiecePositions(board[pos].owner);
             foreach (Position piecePos in otherPositions)
             {
                 List<Move> moves = GenerateMoves(piecePos, true);
                 if (moves.Any(x => x.end == pos))
                 {
+                    checkCalculation = false;
                     return true;
                 }
             }
+            checkCalculation = false;
             return false;
         }
 
@@ -66,12 +88,12 @@ namespace ChessVariants.Shared.Base
         {
             foreach (Rule rule in rules)
             {
-                if (!check || (check && rule.useInCheckCalculation))
+                if (!check || rule.useInCheckCalculation)
                     rule.OnCleanup(pos, moves, this);
             }
             foreach (Rule rule in rules)
             {
-                if (!check || (check && rule.useInCheckCalculation))
+                if (!check || rule.useInCheckCalculation)
                     rule.OnUnmodifyBoard(pos, moves, this);
             }
             moves.RemoveAll(move => !move.legal);
@@ -101,23 +123,23 @@ namespace ChessVariants.Shared.Base
             if (board[pos] == null) return moves;
             foreach (Rule rule in rules)
             {
-                if (!check || (check && rule.useInCheckCalculation))
+                if (!check || rule.useInCheckCalculation)
                     rule.OnModifyBoard(pos, this);
             }
             foreach (Rule rule in rules)
             {
-                if (!check || (check && rule.useInCheckCalculation))
+                if (!check || rule.useInCheckCalculation)
                     rule.OnPreRegularMoveGen(pos, this);
             }
             moves.AddRange(GenerateRegularMoves(pos, check));
             foreach (Rule rule in rules)
             {
-                if (!check || (check && rule.useInCheckCalculation))
+                if (!check || rule.useInCheckCalculation)
                     rule.OnPostRegularMoveGen(pos, moves, this);
             }
             foreach (Rule rule in rules)
             {
-                if (!check || (check && rule.useInCheckCalculation))
+                if (!check || rule.useInCheckCalculation)
                     rule.OnGenerateSpecialMoves(pos, moves, this);
             }
             Cleanup(pos, moves, check);
@@ -132,7 +154,7 @@ namespace ChessVariants.Shared.Base
             {
                 foreach (Rule rule in rules)
                 {
-                    if (!check || (check && rule.useInCheckCalculation))
+                    if (!check || rule.useInCheckCalculation)
                         rule.OnPreMoveBeingGenerated(pos, this);
                 }
                 positions.AddRange(movement.getPositions(pos, board));
@@ -141,7 +163,7 @@ namespace ChessVariants.Shared.Base
                     Move move = new Move(board[pos], movement, pos, end);
                     foreach (Rule rule in rules)
                     {
-                        if (!check || (check && rule.useInCheckCalculation))
+                        if (!check || rule.useInCheckCalculation)
                             rule.OnPostMoveBeingGenerated(pos, move, this);
                     }
                     result.Add(move);

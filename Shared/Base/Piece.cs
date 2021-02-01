@@ -9,5 +9,10 @@ namespace ChessVariants.Shared
         public List<Movement> movements;
         public string name;
         public int owner;
+
+        public string GetFileName()
+        {
+            return $"{owner}_{name}.svg";
+        }
     }
 }

@@ -28,7 +28,12 @@
                 <img class="piece" src="/images/pieces/@(game.board[column, row].GetFileName())">
             }
             @if (possibleTiles.Contains(new Position(column, row))) {
-                <img class="target" src="/images/target.svg"/>
+                if (game.board[column, row] == null)
+                {
+                    <img class="target" src="/images/target.svg"/>
+                } else {
+                    <img class="target" src="/images/target-piece.svg"/>
+                }
             }
             </td>
         }

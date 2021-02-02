@@ -67,34 +67,15 @@ namespace ChessVariants.Shared.Base
             return result;
         }
 
-        public bool InCheck(Position pos)
-        {
-            checkCalculation = true;
-            List<Position> otherPositions = GetAllOtherPiecePositions(board[pos].owner);
-            foreach (Position piecePos in otherPositions)
-            {
-                List<Move> moves = GenerateMoves(piecePos, true);
-                if (moves.Any(x => x.end == pos))
-                {
-                    checkCalculation = false;
-                    return true;
-                }
-            }
-            checkCalculation = false;
-            return false;
-        }
-
-        private void Cleanup(Position pos, List<Move> moves, bool check)
+        private void Cleanup(Position pos, List<Move> moves)
         {
             foreach (Rule rule in rules)
             {
-                if (!check || rule.useInCheckCalculation)
-                    rule.OnCleanup(pos, moves, this);
+                rule.OnCleanup(pos, moves, this);
             }
             foreach (Rule rule in rules)
             {
-                if (!check || rule.useInCheckCalculation)
-                    rule.OnUnmodifyBoard(pos, moves, this);
+                rule.OnUnmodifyBoard(pos, moves, this);
             }
             moves.RemoveAll(move => !move.legal);
         }
@@ -117,36 +98,32 @@ namespace ChessVariants.Shared.Base
             return result;
         }
 
-        public List<Move> GenerateMoves(Position pos, bool check = false)
+        public List<Move> GenerateMoves(Position pos)
         {
             List<Move> moves = new List<Move>();
             if (board[pos] == null) return moves;
             foreach (Rule rule in rules)
             {
-                if (!check || rule.useInCheckCalculation)
-                    rule.OnModifyBoard(pos, this);
+                rule.OnModifyBoard(pos, this);
             }
             foreach (Rule rule in rules)
             {
-                if (!check || rule.useInCheckCalculation)
-                    rule.OnPreRegularMoveGen(pos, this);
+                rule.OnPreRegularMoveGen(pos, this);
             }
-            moves.AddRange(GenerateRegularMoves(pos, check));
+            moves.AddRange(GenerateRegularMoves(pos));
             foreach (Rule rule in rules)
             {
-                if (!check || rule.useInCheckCalculation)
-                    rule.OnPostRegularMoveGen(pos, moves, this);
+                rule.OnPostRegularMoveGen(pos, moves, this);
             }
             foreach (Rule rule in rules)
             {
-                if (!check || rule.useInCheckCalculation)
-                    rule.OnGenerateSpecialMoves(pos, moves, this);
+                rule.OnGenerateSpecialMoves(pos, moves, this);
             }
-            Cleanup(pos, moves, check);
+            Cleanup(pos, moves);
             return moves;
         }
 
-        private List<Move> GenerateRegularMoves(Position pos, bool check)
+        private List<Move> GenerateRegularMoves(Position pos)
         {
             List<Position> positions = new List<Position>();
             List<Move> result = new List<Move>();
@@ -154,8 +131,7 @@ namespace ChessVariants.Shared.Base
             {
                 foreach (Rule rule in rules)
                 {
-                    if (!check || rule.useInCheckCalculation)
-                        rule.OnPreMoveBeingGenerated(pos, this);
+                    rule.OnPreMoveBeingGenerated(pos, this);
                 }
                 positions.AddRange(movement.getPositions(pos, board));
                 foreach (Position end in movement.getPositions(pos, board))
@@ -163,8 +139,7 @@ namespace ChessVariants.Shared.Base
                     Move move = new Move(board[pos], movement, pos, end);
                     foreach (Rule rule in rules)
                     {
-                        if (!check || rule.useInCheckCalculation)
-                            rule.OnPostMoveBeingGenerated(pos, move, this);
+                        rule.OnPostMoveBeingGenerated(pos, move, this);
                     }
                     result.Add(move);
                 }

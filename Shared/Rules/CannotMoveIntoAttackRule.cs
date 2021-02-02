@@ -1,6 +1,7 @@
 ﻿using ChessVariants.Shared.Base;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace ChessVariants.Shared.Rules
@@ -30,7 +31,7 @@ namespace ChessVariants.Shared.Rules
                     move.Execute(game.board);
                     foreach (Position targetPos in game.GetPiecePositions(pieceType, owner))
                     {
-                        if (game.InCheck(targetPos))
+                        if (InCheck(targetPos, game))
                         {
                             move.legal = false;
                         }
@@ -40,5 +41,31 @@ namespace ChessVariants.Shared.Rules
             }
             base.OnCleanup(pos, moves, game);
         }
+
+        private bool InCheck(Position pos, Game game)
+        {
+            List<Rule> rules = Clone(game.rules) as List<Rule>;
+            game.rules = game.rules.FindAll(x => x.GetType() != this.GetType());
+            game.checkCalculation = true;
+            List<Position> otherPositions = game.GetAllOtherPiecePositions(game.board[pos].owner);
+            foreach (Position piecePos in otherPositions)
+            {
+                List<Move> moves = game.GenerateMoves(piecePos);
+                if (moves.Any(x => x.end == pos))
+                {
+                    game.checkCalculation = false;
+                    game.rules = rules;
+                    return true;
+                }
+            }
+            game.checkCalculation = false;
+            game.rules = rules;
+            return false;
+        }
+        private IList<T> Clone<T>(IList<T> listToClone)
+        {
+            return listToClone.Select(item => item).ToList();
+        }
+
     }
 }

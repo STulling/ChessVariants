@@ -5,11 +5,27 @@
 }
 
 td.white {
-    background-color: white;
+    background-color: #f0d9b5;
 }
 
 td.gray {
-    background-color: gray;
+    background-color: #b58863;
+}
+
+td.white.played {
+    background-color: #cdd26a;
+}
+
+td.gray.played {
+    background-color: #aaa23a;
+}
+
+td.selected.white {
+    background-color: #829769;
+}
+
+td.selected.gray {
+    background-color: #646f40;
 }
 
 td.tile img {

@@ -23,7 +23,7 @@
 
             <td 
                 @onclick="@(() => PressPosition(new Position(x, y)))" 
-                class="tile @((((row+column) % 2) != 0) ? "white" : "gray")">
+                class="tile @(GetColor(column, row))">
             @if (game.board[column, row] != null) {
                 <img class="piece" src="/images/pieces/@(game.board[column, row].GetFileName())">
             }
@@ -83,6 +83,30 @@
         else {
             CalcMoves(pos);
         }
+    }
+
+    public string GetColor(int column, int row) 
+    {
+        string result = "";
+        if (selectedPos == new Position(column, row))
+        {
+            result += "selected ";
+        }
+        else if (game.history.Count() > 0) 
+        {
+            if (game.history[^1].end == new Position(column, row) || game.history[^1].start == new Position(column, row))
+            {
+                result += "played ";
+            }
+        }
+        if (((row+column) % 2) != 0) 
+        {
+            result += "white ";
+        } else 
+        {
+            result += "gray ";
+        }
+        return result;
     }
 
     public async Task CalcMoves(Position pos) {

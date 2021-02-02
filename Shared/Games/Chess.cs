@@ -38,7 +38,7 @@ namespace ChessVariants.Shared.Games
             board[3, 7] = new Queen { owner = 1 };
 
             rules.Add(new MirroredMovementRule());
-            rules.Add(new AlternateMovementOnRowRule(typeof(Pawn), new JumpNoCapture(0, 2), new List<int> { 1 }));
+            rules.Add(new AlternateMovementOnRowRule(typeof(Pawn), new LimitedSlideNoCapture(0, 1, 2), new List<int> { 1 }));
             rules.Add(new NoCaptureOwnPiecesRule());
             rules.Add(new EnPassantRule());
             rules.Add(new CannotMoveIntoAttackRule(typeof(King)));

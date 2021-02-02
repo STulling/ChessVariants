@@ -222,4 +222,61 @@ namespace ChessVariants.Shared
             return !(left == right);
         }
     }
+
+    public class LimitedSlideNoCapture : Movement, IEquatable<LimitedSlideNoCapture>
+    {
+        private Position stepOffset { get; set; }
+        private int length { get; set; }
+        public LimitedSlideNoCapture(Position offset, int length)
+        {
+            this.length = length;
+            stepOffset = offset;
+        }
+        public LimitedSlideNoCapture(int x, int y, int length)
+        {
+            this.length = length;
+            stepOffset = new Position(x, y);
+        }
+
+        public override List<Position> getPositions(Position position, Board board)
+        {
+            List<Position> allPositions = new List<Position>();
+            Position sample = position + stepOffset;
+            int x = 0;
+            while (board.inBounds(sample) && board[sample] == null && x < length)
+            {
+                allPositions.Add(sample);
+                sample += stepOffset;
+                x++;
+            }
+            return allPositions;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as LimitedSlideNoCapture);
+        }
+
+        public bool Equals(LimitedSlideNoCapture other)
+        {
+            return other != null &&
+                   EqualityComparer<Position>.Default.Equals(stepOffset, other.stepOffset) &&
+                   length == other.length;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(stepOffset, length);
+        }
+
+        public static bool operator ==(LimitedSlideNoCapture left, LimitedSlideNoCapture right)
+        {
+            return EqualityComparer<LimitedSlideNoCapture>.Default.Equals(left, right);
+        }
+
+        public static bool operator !=(LimitedSlideNoCapture left, LimitedSlideNoCapture right)
+        {
+            return !(left == right);
+        }
+    }
 }

@@ -12,7 +12,7 @@ namespace ChessVariants.Shared.Rules
             base(
                 new List<Type> { typeof(Pawn) },
                 new List<Type> { typeof(Pawn) },
-                new List<Movement>{ new JumpNoCapture(0, 2) }, 
+                new List<Movement>{ new LimitedSlideNoCapture(0, 1, 2) }, 
                 new Dictionary<Position, Movement>()
                 {
                     { new Position(1, 0),  new Jump(1,1)},

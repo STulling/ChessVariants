@@ -3,11 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessVariants.Server", "Server\ChessVariants.Server.csproj", "{04A4A7BA-5372-4153-88E1-06311E2F610C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessVariants.Server", "Server\ChessVariants.Server.csproj", "{04A4A7BA-5372-4153-88E1-06311E2F610C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessVariants.Client", "Client\ChessVariants.Client.csproj", "{2683EC97-9ADE-4B5E-B6CE-7903400BD707}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessVariants.Client", "Client\ChessVariants.Client.csproj", "{2683EC97-9ADE-4B5E-B6CE-7903400BD707}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessVariants.Shared", "Shared\ChessVariants.Shared.csproj", "{FD47A297-7115-4C7C-B510-1C93AED43BF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ChessVariants.Shared", "Shared\ChessVariants.Shared.csproj", "{FD47A297-7115-4C7C-B510-1C93AED43BF3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessVariants.SharedTests", "ChessVariants.SharedTests\ChessVariants.SharedTests.csproj", "{F59E90B2-21FA-454A-916A-4493AEBF24DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{FD47A297-7115-4C7C-B510-1C93AED43BF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FD47A297-7115-4C7C-B510-1C93AED43BF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FD47A297-7115-4C7C-B510-1C93AED43BF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F59E90B2-21FA-454A-916A-4493AEBF24DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F59E90B2-21FA-454A-916A-4493AEBF24DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F59E90B2-21FA-454A-916A-4493AEBF24DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F59E90B2-21FA-454A-916A-4493AEBF24DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

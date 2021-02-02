@@ -1,21 +1,46 @@
-﻿@page "/"
+﻿@page "/game/{id}"
+@using ChessVariants.Shared.Base
+@using ChessVariants.Shared.Games
 @using Microsoft.AspNetCore.SignalR.Client
 @inject NavigationManager NavigationManager
 @implements IAsyncDisposable
 
 <div class="form-group">
     <label>
-        User:
+        @Id:
         <input @bind="userInput" />
     </label>
 </div>
 <div class="form-group">
-    <label>
-        Message:
-        <input @bind="messageInput" size="50" />
-    </label>
+    <table>
+    @for (int row = game.board.height - 1; row >= 0; row--)
+    {
+        int y = row;
+        <tr>
+        @for (int column = 0; column < game.board.width; column++)
+        {
+            int x = column;
+
+            <td 
+                @onclick="@(() => PressPosition(new Position(x, y)))" 
+                class="tile @(GetColor(column, row))">
+            @if (game.board[column, row] != null) {
+                <img class="piece" src="/images/pieces/@(game.board[column, row].GetFileName())">
+            }
+            @if (possibleTiles.Contains(new Position(column, row))) {
+                if (game.board[column, row] == null)
+                {
+                    <img class="target" src="/images/target.svg"/>
+                } else {
+                    <img class="target" src="/images/target-piece.svg"/>
+                }
+            }
+            </td>
+        }
+        </tr>
+    }
+    </table>
 </div>
-<button @onclick="Send" disabled="@(!IsConnected)">Send</button>
 
 <hr>
 
@@ -27,35 +52,122 @@
 </ul>
 
 @code {
+    [Parameter]
+    public string Id { get; set; }
     private HubConnection hubConnection;
     private List<string> messages = new List<string>();
+    private List<Position> possibleTiles = new List<Position>();
+    private Position selectedPos;
     private string userInput;
     private string messageInput;
+    private List<Move> moves;
+    private Game game = new Chess();
 
     protected override async Task OnInitializedAsync()
     {
         hubConnection = new HubConnectionBuilder()
-            .WithUrl(NavigationManager.ToAbsoluteUri("/chathub"))
+            .WithUrl(NavigationManager.ToAbsoluteUri("/gamehub"))
             .Build();
 
-        hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
+        hubConnection.On<string>("Log", (message) =>
         {
-            var encodedMsg = $"{user}: {message}";
-            messages.Add(encodedMsg);
+            Console.WriteLine("Got message: " + message);
+            messages.Add(message);
             StateHasChanged();
         });
 
         await hubConnection.StartAsync();
+
+        await hubConnection.SendAsync("JoinRoom", Id);
+    }
+
+    public async Task PressPosition(Position pos) {
+        if (moves != null && moves.Any(x => x.end == pos)) {
+            ExecuteMove(pos);
+        }
+        else {
+            CalcMoves(pos);
+        }
+    }
+
+    public string GetColor(int column, int row) 
+    {
+        string result = "";
+        if (selectedPos == new Position(column, row))
+        {
+            result += "selected ";
+        }
+        else if (game.history.Count() > 0) 
+        {
+            if (game.history[^1].end == new Position(column, row) || game.history[^1].start == new Position(column, row))
+            {
+                result += "played ";
+            }
+        }
+        if (((row+column) % 2) != 0) 
+        {
+            result += "white ";
+        } else 
+        {
+            result += "gray ";
+        }
+        return result;
+    }
+
+    public async Task CalcMoves(Position pos) {
+        if (!pos.Equals(selectedPos))
+        {
+            selectedPos = pos;
+            Console.WriteLine("Selected: " + selectedPos);
+
+            moves = game.GenerateMoves(selectedPos);
+            Console.WriteLine(String.Join(", ", moves));
+            possibleTiles.Clear();
+            foreach (Move move in moves)
+            {
+                possibleTiles.Add(move.end);
+            }
+        }
+        else 
+        {
+            selectedPos = null;
+            possibleTiles.Clear();
+            moves.Clear();
+        }
+        StateHasChanged();
+    }
+
+    public async Task ExecuteMove(Position pos) {
+        Console.WriteLine(String.Join(", ", moves));
+        Console.WriteLine(pos);
+        Move move = moves.Find(x => x.end.Equals(pos));
+        Console.WriteLine("Executing from: " + selectedPos);
+        Console.WriteLine("Executing: " + move);
+        if (game.PlayMove(move)) {
+            Console.WriteLine("Move valid");
+            selectedPos = null;
+            possibleTiles.Clear();
+            moves.Clear();
+        }
+        StateHasChanged();
     }
 
     Task Send() =>
-        hubConnection.SendAsync("SendMessage", userInput, messageInput);
+        hubConnection.SendAsync("SendMove", Id, 
+            new Move(
+                game.board[selectedPos],
+                null,
+                selectedPos, 
+                new Position(4, 5)
+            )
+        );
 
     public bool IsConnected =>
         hubConnection.State == HubConnectionState.Connected;
 
     public async ValueTask DisposeAsync()
     {
+        await hubConnection.SendAsync("LeaveRoom", Id);
         await hubConnection.DisposeAsync();
     }
 }

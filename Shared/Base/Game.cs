@@ -71,11 +71,11 @@ namespace ChessVariants.Shared.Base
         {
             foreach (Rule rule in rules)
             {
-                rule.OnCleanup(pos, moves, this);
+                rule.OnUnmodifyBoard(pos, moves, this);
             }
             foreach (Rule rule in rules)
             {
-                rule.OnUnmodifyBoard(pos, moves, this);
+                rule.OnCleanup(pos, moves, this);
             }
             moves.RemoveAll(move => !move.legal);
         }

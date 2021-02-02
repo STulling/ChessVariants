@@ -9,7 +9,7 @@ namespace ChessVariants.Shared.Rules
     {
         public override void OnUnmodifyBoard(Position pos, List<Move> moves, Game game)
         {
-            if (game.board[pos] != null && (game.board[pos].owner == 1 || game.checkCalculation))
+            if (game.board[pos] != null && game.board[pos].owner == 1)
             {
                 mirrorBoard(game.board);
                 mirrorPos(game.board, pos);
@@ -21,7 +21,7 @@ namespace ChessVariants.Shared.Rules
 
         public override void OnModifyBoard(Position pos, Game game)
         {
-            if (game.board[pos] != null && (game.board[pos].owner == 1 || game.checkCalculation))
+            if (game.board[pos] != null && game.board[pos].owner == 1)
             {
                 mirrorBoard(game.board);
                 mirrorPos(game.board, pos);

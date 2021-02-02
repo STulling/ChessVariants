@@ -46,19 +46,16 @@ namespace ChessVariants.Shared.Rules
         {
             List<Rule> rules = Clone(game.rules) as List<Rule>;
             game.rules = game.rules.FindAll(x => x.GetType() != this.GetType());
-            game.checkCalculation = true;
             List<Position> otherPositions = game.GetAllOtherPiecePositions(game.board[pos].owner);
             foreach (Position piecePos in otherPositions)
             {
                 List<Move> moves = game.GenerateMoves(piecePos);
                 if (moves.Any(x => x.end == pos))
                 {
-                    game.checkCalculation = false;
                     game.rules = rules;
                     return true;
                 }
             }
-            game.checkCalculation = false;
             game.rules = rules;
             return false;
         }

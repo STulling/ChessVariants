@@ -14,7 +14,7 @@ namespace ChessVariants.Shared.Rules
         public CheckMateRule(Type piece) : base(new List<Type> { piece })
         { }
 
-        public override bool isGameOver(Game game)
+        public override Game.Completion isGameOver(Game game)
         {
             /*Can any pieces move*/
             List<Position> piecePositions = game.GetOwnerPiecePositions(game.currentTurn);
@@ -24,7 +24,7 @@ namespace ChessVariants.Shared.Rules
                 List<Move> moves = game.GenerateMoves(piecePos);
                 if (moves.Count != 0) 
                 {
-                    return false;
+                    return Game.Completion.None;
                 }
             }
 
@@ -36,13 +36,13 @@ namespace ChessVariants.Shared.Rules
                 {
                     if (InCheck(piecePos, game))
                     {
-                        return true; 
+                        return Game.Completion.Lose;
                     }
                 }
             }
             /*No: Stalemate*/
 
-            return true;
+            return Game.Completion.Draw;
         }
     }
 }

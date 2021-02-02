@@ -148,6 +148,9 @@
             selectedPos = null;
             possibleTiles.Clear();
             moves.Clear();
+            if (game.completion != Game.Completion.None) {
+                Console.WriteLine($"Game ends, player {game.currentTurn} {game.completion}");
+            }
         }
         StateHasChanged();
     }

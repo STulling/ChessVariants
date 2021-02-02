@@ -11,6 +11,16 @@ namespace ChessVariants.Shared.Base
 
         public int currentTurn;
 
+        public Completion completion = Completion.None;
+
+        public enum Completion
+        {
+            None,
+            Draw,
+            Win,
+            Lose
+        }
+
         public int amountOfPlayers;
 
         public List<Rule> rules;
@@ -49,9 +59,13 @@ namespace ChessVariants.Shared.Base
                 currentTurn = (currentTurn + 1) % amountOfPlayers;
                 foreach (Rule rule in rules)
                 {
-                    rule.isGameOver(this);
+                    Completion ruleCompletion = rule.isGameOver(this);
+                    if (ruleCompletion != Completion.None)
+                    {
+                        this.completion = ruleCompletion;
+                        return true;
+                    }
                 }
-
                 return true;
             }
             return false;

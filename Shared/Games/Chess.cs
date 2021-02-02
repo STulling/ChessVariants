@@ -12,6 +12,7 @@ namespace ChessVariants.Shared.Games
         public Chess() : base()
         {
             board = new Board(8, 8);
+            amountOfPlayers = 2;
             for (int x = 0; x < 8; x++)
             {
                 board[x, 1] = new Pawn();
@@ -38,10 +39,10 @@ namespace ChessVariants.Shared.Games
             board[3, 7] = new Queen { owner = 1 };
 
             rules.Add(new MirroredMovementRule());
-            rules.Add(new AlternateMovementOnRowRule(typeof(Pawn), new LimitedSlideNoCapture(0, 1, 2), new List<int> { 1 }));
+            rules.Add(new AlternateMovementOnRowRule(typeof(Pawn), new LimitedSlideNoCapture(new Position(0, 1), 2), new List<int> { 1 }));
             rules.Add(new NoCaptureOwnPiecesRule());
             rules.Add(new EnPassantRule());
-            rules.Add(new CannotMoveIntoAttackRule(typeof(King)));
+            rules.Add(new CheckMateRule(typeof(King)));
         }
     }
 }

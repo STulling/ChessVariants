@@ -8,7 +8,7 @@ namespace ChessVariants.Shared.Rules
 {
     public class CannotMoveIntoAttackRule : Rule
     {
-        private List<Type> pieces;
+        protected List<Type> pieces;
 
         private Piece[,] tmp;
         public CannotMoveIntoAttackRule(List<Type> pieces)
@@ -42,7 +42,7 @@ namespace ChessVariants.Shared.Rules
             base.OnCleanup(pos, moves, game);
         }
 
-        private bool InCheck(Position pos, Game game)
+        protected bool InCheck(Position pos, Game game)
         {
             List<Rule> rules = Clone(game.rules) as List<Rule>;
             game.rules = game.rules.FindAll(x => x.GetType() != this.GetType());

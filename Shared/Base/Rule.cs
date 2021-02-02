@@ -114,5 +114,8 @@ namespace ChessVariants.Shared.Base
 
 		public virtual void OnGenerateSpecialMoves(Position pos, List<Move> moves, Game game)
 		{ }
+
+		public virtual bool isGameOver(Game game)
+		{ return false; }
 	}
 }

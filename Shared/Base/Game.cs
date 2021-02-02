@@ -11,6 +11,8 @@ namespace ChessVariants.Shared.Base
 
         public int currentTurn;
 
+        public int amountOfPlayers;
+
         public List<Rule> rules;
 
         public List<Move> history;
@@ -44,6 +46,12 @@ namespace ChessVariants.Shared.Base
                 {
                     rule.OnMovePlayed(move.start, move, this);
                 }
+                currentTurn = (currentTurn + 1) % amountOfPlayers;
+                foreach (Rule rule in rules)
+                {
+                    rule.isGameOver(this);
+                }
+
                 return true;
             }
             return false;
@@ -90,6 +98,24 @@ namespace ChessVariants.Shared.Base
                     if (board[x, y] == null) continue;
                     Piece piece = board[x, y];
                     if (piece.owner != owner)
+                    {
+                        result.Add(new Position(x, y));
+                    }
+                }
+            }
+            return result;
+        }
+
+        public List<Position> GetOwnerPiecePositions(int owner)
+        {
+            List<Position> result = new List<Position>();
+            for (int x = 0; x < board.width; x++)
+            {
+                for (int y = 0; y < board.height; y++)
+                {
+                    if (board[x, y] == null) continue;
+                    Piece piece = board[x, y];
+                    if (piece.owner == owner)
                     {
                         result.Add(new Position(x, y));
                     }
